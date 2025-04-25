@@ -1,4 +1,4 @@
-# Object Recognition as Next Token Prediction
+# Object Recognition via Denoising Token Prediction
 
 [arXiv](https://arxiv.org/abs/2312.02142) | [Colab](https://colab.research.google.com/drive/1pJX37LP5xGLDzD3H7ztTmpq1RrIBeWX3?usp=sharing) | [Documentation](docs/README.md) | [Hugging Face](https://huggingface.co/kaiyuyue/nxtp)
 
@@ -7,34 +7,35 @@
   <img src="./assets/teaser-light-mode.svg#gh-light-mode-only">
 </p>
 
-> Top 30 predictions with probabilities from our model on the image of "The Legend of Zelda: Tears of the Kingdom" [^1].
+
 
 ## Introduction
 
-This is the official PyTorch implementation for the paper [Object Recognition as Next Token Prediction](https://arxiv.org/abs/2312.02142) accepted at CVPR 2024 (Highlight).
+I propose a novel framework that bridges this gap by treating visual recognition as an autoregressive sequence modeling task with denoising objectives. Our approach draws inspiration from two key observations: (1) the inherent compositional structure of visual scenes can be effectively captured through patch-level token sequences, analogous to word tokens in NLP, and (2) denoising techniques provide a powerful mechanism for learning robust representations by forcing models to recover clean signals from corrupted inputs. 
+
 
 ```bibtex
 @inproceedings{nxtp,
-  title     = {{Object Recognition as Next Token Prediction}},
-  author    = {Kaiyu Yue and Bor-Chun Chen and Jonas Geiping and Hengduo Li and Tom Goldstein and Ser-Nam Lim},
+  title     = {{Object Recognition via Denoising Token Prediction}},
+  author    = {Thomas Koffi Dzelu},
   booktitle = {Computer Vision and Pattern Recognition Conference (CVPR)},
-  year      = {2024}
+  year      = {2025}
 }
 ```
 
 ## Updates
 
-May 26, 2024
+April 25, 2025
 
 - add ImageNet experiments: see [src/imagenet](src/imagenet/README.md)
 - [visualize attention maps](src/infer.py#L25) in decoder layers during inference: see [examples](#examples)
 
-Mar 17, 2024
+April 17, 2025
 
 - release the best [1.78B model](#models) trained on G70M
 - export onnx models: [docs/onnx-export](docs/README.md#onnx-export)
 
-Mar 03, 2024
+April 03, 2025
 
 - add [examples](#examples) with top-20 predictions to this readme
 - add CLIP ViT- L/14 as [the textual embedding model](src/evals/metrics.py#L32) in evaluation metric (Table A.8 of the paper)
