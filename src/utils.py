@@ -14,14 +14,17 @@ import torch.distributed as dist
 
 from random import shuffle
 from nltk.corpus import words
+from nltk.sem.chat80 import concepts
 from nltk.stem import WordNetLemmatizer
 from fairscale.nn.model_parallel.initialize import initialize_model_parallel
+from nltk.corpus import wordnet as wn
+from conceptnet_lite import connect
 
 """
 Functions for training
 """
 
-
+connect()
 def load_config(argv):
     argv = argv[1:]  # rm the script self name
     if len(argv) == 0:
@@ -302,3 +305,29 @@ def get_noun_words(
         print(raw_text, ": ", tgts)
 
     return ",".join(tgts)  # ease batching
+
+
+def is_concrete_noun(word):
+    synsets = wn.synsets(word, pos=wn.NOUN)
+    if not synsets:
+        return False
+    for syn in synsets:
+        for path in syn.hypernym_paths():
+            if any('abstraction' in node.name() for node in path):
+                return False
+    return True
+
+def visual_relevance_score(word):
+    concept = concepts('/c/en/' + word.lower())
+    if not concept:
+        return 0
+    return sum(1 for e in concept.edges if e.relation.name in {'UsedFor', 'IsA', 'AtLocation', 'HasProperty'})
+
+def denoise_labels(nouns):
+    concrete = [n for n in nouns if is_concrete_noun(n)]
+    ranked = sorted(concrete, key=lambda n: visual_relevance_score(n), reverse=True)
+    return ranked
+
+def extract_and_denoise(caption, args):
+    raw_nouns = get_noun_words(caption, contains_number=args.label_contains_number)
+    return ", ".join(denoise_labels(raw_nouns))

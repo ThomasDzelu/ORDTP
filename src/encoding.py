@@ -4,7 +4,10 @@ import random
 import torch
 
 from random import shuffle
+
+from src.utils import extract_and_denoise
 from utils import get_noun_words
+from utils import denoise_labels
 
 
 def construct_text_inputs(
@@ -83,10 +86,7 @@ def construct_text_inputs(
         if skip_extract_nouns:
             _func = lambda x: x.lower()
         else:
-            _func = partial(
-                get_noun_words,
-                contains_number=args.label_contains_number,
-            )
+            _func = extract_and_denoise(captions,args)
 
         if isinstance(caps[0], list):
             objs = []
